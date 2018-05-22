@@ -14,8 +14,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBOutlet weak var mainImageView: UIImageView!
     
+    @IBOutlet weak var resultLabel: UILabel!
     let imagePicker = UIImagePickerController();
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +35,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 fatalError("Could not convert to ci Iamge");
             }
             
-            detect(image: userImage)
+            detect(image: ciIamge)
         }
         imagePicker.dismiss(animated: true, completion: nil)
     }
@@ -54,6 +54,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let request = VNCoreMLRequest(model: model) { (request, error) in
             guard let results = request.results as? [VNClassificationObservation] else {
                 fatalError("Failed to retrieve CoreML request results")
+            }
+            
+            if let highestConfidence = results.first {
+                self.navigationItem.title = highestConfidence.identifier
             }
             
             print(results)
